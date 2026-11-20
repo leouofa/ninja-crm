@@ -1,0 +1,88 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4"
+       data-controller="modal"
+       data-action="click->modal#backdropClick">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-xl overflow-hidden transform transition-all"
+         data-controller="template-modal"
+         data-template-modal-templates-map-value="<%= @templates_map.to_json %>">
+
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-semibold text-slate-900">
+            <%= template.persisted? ? "Edit Message Template" : "Category Message Template" %>
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">Define or update the outreach template for a specific lead category.</p>
+        </div>
+        <button type="button" data-action="click->modal#close" class="text-slate-400 hover:text-slate-600 rounded-lg p-1 text-sm font-semibold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <%= form_with model: template, class: "p-6 space-y-4" do |f| %>
+        <% if template.errors.any? %>
+          <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700 space-y-1">
+            <% template.errors.full_messages.each do |msg| %>
+              <div>• <%= msg %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Category Dropdown -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <%= f.label :category_id, "Category *", class: "block text-xs font-semibold text-slate-700 uppercase tracking-wider" %>
+            <button type="button"
+                    data-action="click->template-modal#categoryChanged"
+                    onclick="const sel = document.getElementById('template_category_id'); sel.value = 'new'; sel.dispatchEvent(new Event('change'));"
+                    class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+              + New category
+            </button>
+          </div>
+          <%= f.select :category_id,
+                       options_for_select(@categories.map { |c| ["#{c.name} #{'(has template)' if c.template.present?}", c.id] } + [["+ Add new category...", "new"]], template.category_id),
+                       { prompt: "Select category..." },
+                       { id: "template_category_id",
+                         required: true,
+                         data: { template_modal_target: "categorySelect", action: "change->template-modal#categoryChanged" },
+                         class: "w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" } %>
+        </div>
+
+        <!-- Inline New Category Input -->
+        <div data-template-modal-target="newCategoryContainer" class="hidden p-3 bg-indigo-50/60 border border-indigo-200 rounded-lg space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-semibold text-indigo-900">New Category Name</label>
+            <button type="button" data-action="click->template-modal#cancelNewCategory" class="text-xs text-slate-500 hover:text-slate-700">Cancel</button>
+          </div>
+          <%= f.text_field :new_category_name,
+                           placeholder: "e.g. Advisory, Partnerships...",
+                           data: { template_modal_target: "newCategoryInput" },
+                           class: "w-full text-sm px-3 py-1.5 bg-white border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+
+        <!-- Template Body Textarea -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <%= f.label :body, "Message Template *", class: "block text-xs font-semibold text-slate-700 uppercase tracking-wider" %>
+            <span class="text-[11px] text-slate-400">Available variables: {{name}}, {{company}}</span>
+          </div>
+          <%= f.text_area :body,
+                          rows: 8,
+                          required: true,
+                          placeholder: "Hi {{name}},\n\nI noticed your work at {{company}}...",
+                          data: { template_modal_target: "textarea" },
+                          class: "w-full text-sm font-mono px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+
+        <!-- Actions -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" data-action="click->modal#close" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+            Cancel
+          </button>
+          <%= f.submit template.persisted? ? "Save Changes" : "Save Template", class: "px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

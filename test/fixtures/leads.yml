@@ -1,0 +1,11 @@
+alice_lead:
+  contact: alice
+  category: coaching
+  status: in_progress
+  notes: Alice lead notes
+
+bob_lead:
+  contact: bob
+  category: contracting
+  status: backlog
+  notes: Bob lead notes
