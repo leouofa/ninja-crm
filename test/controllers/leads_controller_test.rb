@@ -1,0 +1,102 @@
+require "test_helper"
+
+class LeadsControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    @lead = leads(:alice_lead)
+  end
+
+  test "should get index" do
+    get leads_path
+    assert_response :success
+    assert_select "h1", text: /Leads Pipeline/
+    assert_select "h3", text: "Backlog"
+    assert_select "h3", text: "In-Progress"
+    assert_select "h3", text: "Done"
+  end
+
+  test "should filter index by category" do
+    get leads_path(category_id: categories(:coaching).id)
+    assert_response :success
+    assert_select "h4", text: @lead.contact.name
+  end
+
+  test "should get new" do
+    get new_lead_path
+    assert_response :success
+  end
+
+  test "should get new with pre-selected contact" do
+    get new_lead_path(contact_id: contacts(:clara).id, status: "in_progress")
+    assert_response :success
+  end
+
+  test "should create lead" do
+    assert_difference("Lead.count", 1) do
+      post leads_path, params: {
+        lead: {
+          contact_id: contacts(:clara).id,
+          category_id: categories(:recruiting).id,
+          status: "backlog",
+          notes: "Initial discovery phase"
+        }
+      }
+    end
+
+    assert_redirected_to leads_path
+  end
+
+  test "should create lead with new category name" do
+    assert_difference("Category.count", 1) do
+      assert_difference("Lead.count", 1) do
+        post leads_path, params: {
+          lead: {
+            contact_id: contacts(:clara).id,
+            new_category_name: "Strategic Advisory",
+            status: "in_progress",
+            notes: "Advisory client"
+          }
+        }
+      end
+    end
+
+    assert_redirected_to leads_path
+    assert_equal "Strategic Advisory", Lead.last.category.name
+  end
+
+  test "should get edit" do
+    get edit_lead_path(@lead)
+    assert_response :success
+  end
+
+  test "should update lead" do
+    patch lead_path(@lead), params: {
+      lead: {
+        status: "done",
+        notes: "Completed deal successfully"
+      }
+    }
+
+    assert_redirected_to leads_path
+    @lead.reload
+    assert_equal "done", @lead.status
+    assert_equal "Completed deal successfully", @lead.notes
+  end
+
+  test "should move lead status via patch" do
+    patch move_lead_path(@lead), params: { status: "done" }, as: :json
+    assert_response :success
+    @lead.reload
+    assert_equal "done", @lead.status
+  end
+
+  test "should destroy lead without destroying contact" do
+    contact = @lead.contact
+    assert_difference("Lead.count", -1) do
+      assert_no_difference("Contact.count") do
+        delete lead_path(@lead)
+      end
+    end
+
+    assert_redirected_to leads_path
+  end
+end

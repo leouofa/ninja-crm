@@ -1,0 +1,137 @@
+<div class="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Message Templates</h1>
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-200 text-slate-700">
+          <%= @templates.size %>
+        </span>
+      </div>
+      <p class="text-sm text-slate-500 mt-1">
+        Reusable outreach & communication templates tied directly to lead categories.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= link_to new_template_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors whitespace-nowrap" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>New Template</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Templates Table Card -->
+  <div class="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+    <% if @templates.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm divide-y divide-slate-200">
+          <thead class="bg-slate-50 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+            <tr>
+              <th scope="col" class="py-3.5 pl-6 pr-3 w-48">Category</th>
+              <th scope="col" class="px-3 py-3.5">Template Message Preview</th>
+              <th scope="col" class="relative py-3.5 pl-3 pr-6 text-right w-44">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <% @templates.each do |template| %>
+              <tr class="hover:bg-slate-50/75 transition-colors group">
+                <!-- Category Badge -->
+                <td class="py-4 pl-6 pr-3 align-top">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    <%= template.category.name %>
+                  </span>
+                  <div class="text-[11px] text-slate-400 mt-1">
+                    <%= pluralize(template.category.leads.count, "lead") %> in this category
+                  </div>
+                </td>
+
+                <!-- Template Message Preview -->
+                <td class="px-3 py-4 align-top text-slate-700">
+                  <div class="bg-slate-50 border border-slate-200/80 rounded-lg p-3 text-xs font-mono text-slate-700 whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed select-all">
+                    <%= template.body %>
+                  </div>
+                </td>
+
+                <!-- Actions -->
+                <td class="py-4 pl-3 pr-6 text-right whitespace-nowrap text-sm font-medium align-top">
+                  <div class="inline-flex items-center gap-2 justify-end"
+                       data-controller="clipboard"
+                       data-clipboard-content-value="<%= template.body %>">
+
+                    <!-- One click copy button -->
+                    <button type="button"
+                            data-action="click->clipboard#copy"
+                            data-clipboard-target="button"
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs transition-colors">
+                      <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <span data-clipboard-target="label">Copy</span>
+                    </button>
+
+                    <!-- Edit button -->
+                    <%= link_to edit_template_path(template), data: { turbo_frame: "modal" }, class: "p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors", title: "Edit Template" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    <% end %>
+
+                    <!-- Delete button -->
+                    <%= button_to template_path(template), method: :delete, data: { turbo_confirm: "Are you sure you want to delete the template for '#{template.category.name}'?" }, class: "p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors", title: "Delete Template" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-12 px-4">
+        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-900">No templates yet</h3>
+        <p class="mt-1 text-xs text-slate-500">Create outreach templates for your categories.</p>
+        <div class="mt-4">
+          <%= link_to new_template_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm" do %>
+            <span>Add Template</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Unassigned Categories section (if any category lacks a template) -->
+  <% unassigned_cats = @categories.reject { |c| c.template.present? } %>
+  <% if unassigned_cats.any? %>
+    <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div>
+        <h4 class="text-xs font-bold text-amber-900 uppercase tracking-wider">Categories missing templates</h4>
+        <div class="flex flex-wrap gap-2 mt-1.5">
+          <% unassigned_cats.each do |cat| %>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white text-amber-900 border border-amber-200">
+              <%= cat.name %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+      <div>
+        <%= link_to new_template_path(category_id: unassigned_cats.first.id), data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow-2xs transition-colors whitespace-nowrap" do %>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Create Template for <%= unassigned_cats.first.name %></span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

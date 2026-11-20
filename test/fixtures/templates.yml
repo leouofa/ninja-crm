@@ -1,0 +1,7 @@
+coaching_template:
+  category: coaching
+  body: "Hi {{name}}, Coaching outreach."
+
+contracting_template:
+  category: contracting
+  body: "Hi {{name}}, Contracting outreach."

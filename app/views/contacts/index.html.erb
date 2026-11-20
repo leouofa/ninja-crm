@@ -1,0 +1,169 @@
+<div class="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Contacts</h1>
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-200 text-slate-700">
+          <%= @contacts.size %>
+        </span>
+      </div>
+      <p class="text-sm text-slate-500 mt-1">Manage contacts and promote them to active leads.</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Search Form -->
+      <%= form_with url: contacts_path, method: :get, class: "relative", data: { turbo_action: "advance" } do |f| %>
+        <div class="relative flex items-center">
+          <svg class="w-4 h-4 absolute left-3 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <%= f.text_field :q, value: @query, placeholder: "Search contacts...", class: "pl-9 pr-8 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-52 sm:w-64" %>
+          <% if @query.present? %>
+            <%= link_to "✕", contacts_path, class: "absolute right-2.5 text-slate-400 hover:text-slate-600 text-xs font-bold" %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= link_to new_contact_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors whitespace-nowrap" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>New Contact</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Contacts Table Card -->
+  <div class="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+    <% if @contacts.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm divide-y divide-slate-200">
+          <thead class="bg-slate-50 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+            <tr>
+              <th scope="col" class="py-3.5 pl-6 pr-3">Name & Role</th>
+              <th scope="col" class="px-3 py-3.5">Company</th>
+              <th scope="col" class="px-3 py-3.5">Contact Info</th>
+              <th scope="col" class="px-3 py-3.5">Lead Status</th>
+              <th scope="col" class="px-3 py-3.5">Notes</th>
+              <th scope="col" class="relative py-3.5 pl-3 pr-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <% @contacts.each do |contact| %>
+              <tr class="hover:bg-slate-50/75 transition-colors group">
+                <!-- Name & Role -->
+                <td class="py-4 pl-6 pr-3">
+                  <div class="font-medium text-slate-900"><%= contact.name %></div>
+                  <% if contact.role.present? %>
+                    <div class="text-xs text-slate-500 mt-0.5"><%= contact.role %></div>
+                  <% end %>
+                </td>
+
+                <!-- Company -->
+                <td class="px-3 py-4 text-slate-700">
+                  <%= contact.company.presence || "—" %>
+                </td>
+
+                <!-- Contact Info -->
+                <td class="px-3 py-4 text-slate-600 space-y-1">
+                  <% if contact.email.present? %>
+                    <div class="flex items-center gap-1.5 text-xs">
+                      <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <a href="mailto:<%= contact.email %>" class="hover:text-indigo-600 hover:underline"><%= contact.email %></a>
+                    </div>
+                  <% end %>
+                  <% if contact.phone.present? %>
+                    <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                      <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      <span><%= contact.phone %></span>
+                    </div>
+                  <% end %>
+                  <% if contact.linkedin_url.present? %>
+                    <div class="flex items-center gap-1.5 text-xs">
+                      <svg class="w-3.5 h-3.5 text-sky-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <a href="<%= contact.linkedin_url %>" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">LinkedIn</a>
+                    </div>
+                  <% end %>
+                  <% if contact.email.blank? && contact.phone.blank? && contact.linkedin_url.blank? %>
+                    <span class="text-slate-400 text-xs">—</span>
+                  <% end %>
+                </td>
+
+                <!-- Lead Status & Category -->
+                <td class="px-3 py-4">
+                  <% if contact.lead.present? %>
+                    <div class="flex flex-col gap-1 items-start">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= Lead::STATUS_COLORS[contact.lead.status] %>">
+                        <%= contact.lead.status_label %>
+                      </span>
+                      <span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                        <%= contact.lead.category.name %>
+                      </span>
+                    </div>
+                  <% else %>
+                    <%= link_to new_lead_path(contact_id: contact.id), data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-colors" do %>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span>Create Lead</span>
+                    <% end %>
+                  <% end %>
+                </td>
+
+                <!-- Notes -->
+                <td class="px-3 py-4 text-xs text-slate-500 max-w-xs truncate" title="<%= contact.notes %>">
+                  <%= contact.notes.presence || "—" %>
+                </td>
+
+                <!-- Actions -->
+                <td class="py-4 pl-3 pr-6 text-right whitespace-nowrap text-sm font-medium">
+                  <div class="inline-flex items-center gap-2">
+                    <%= link_to edit_contact_path(contact), data: { turbo_frame: "modal" }, class: "p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors", title: "Edit Contact" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    <% end %>
+
+                    <%= button_to contact_path(contact), method: :delete, data: { turbo_confirm: "Are you sure you want to delete #{contact.name}?" }, class: "p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors", title: "Delete Contact" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-12 px-4">
+        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-900">No contacts found</h3>
+        <p class="mt-1 text-xs text-slate-500">
+          <% if @query.present? %>
+            No contacts matched your search query "<%= @query %>".
+          <% else %>
+            Get started by adding your first contact.
+          <% end %>
+        </p>
+        <div class="mt-4">
+          <%= link_to new_contact_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm" do %>
+            <span>Add Contact</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

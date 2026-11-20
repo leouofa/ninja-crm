@@ -1,0 +1,85 @@
+<div class="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900">Leads Pipeline</h1>
+      <p class="text-sm text-slate-500 mt-1">Organize and advance your prospective leads through the pipeline.</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= link_to new_lead_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>New Lead</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Category Filter Pills -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+    <span class="text-slate-500 font-medium whitespace-nowrap">Filter by category:</span>
+
+    <%= link_to "All (#{Lead.count})", leads_path, class: "px-3 py-1.5 rounded-full font-medium transition-colors whitespace-nowrap #{@selected_category_id.blank? ? 'bg-slate-900 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'}" %>
+
+    <% @categories.each do |cat| %>
+      <% is_selected = (@selected_category_id.to_s == cat.id.to_s) %>
+      <%= link_to leads_path(category_id: cat.id), class: "px-3 py-1.5 rounded-full font-medium transition-colors whitespace-nowrap #{is_selected ? 'bg-indigo-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'}" do %>
+        <%= cat.name %>
+        <span class="ml-1 opacity-75">(<%= cat.leads.count %>)</span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- 3-Column Kanban Board -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+    <%
+      columns_config = [
+        { key: "backlog", title: "Backlog", dot_color: "bg-amber-400", badge_bg: "bg-amber-100 text-amber-800", border_top: "border-t-4 border-amber-400" },
+        { key: "in_progress", title: "In-Progress", dot_color: "bg-blue-500", badge_bg: "bg-blue-100 text-blue-800", border_top: "border-t-4 border-blue-500" },
+        { key: "done", title: "Done", dot_color: "bg-emerald-500", badge_bg: "bg-emerald-100 text-emerald-800", border_top: "border-t-4 border-emerald-500" }
+      ]
+    %>
+
+    <% columns_config.each do |col| %>
+      <% leads_in_col = @leads_by_status[col[:key]] || [] %>
+
+      <div class="bg-slate-100/80 rounded-2xl p-4 border border-slate-200 flex flex-col min-h-[550px] transition-colors <%= col[:border_top] %>"
+           data-controller="kanban"
+           data-kanban-status-value="<%= col[:key] %>"
+           data-action="dragover->kanban#dragOver dragleave->kanban#dragLeave drop->kanban#drop">
+
+        <!-- Column Header -->
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/80 select-none">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full <%= col[:dot_color] %>"></span>
+            <h3 class="font-semibold text-sm text-slate-900"><%= col[:title] %></h3>
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold <%= col[:badge_bg] %>">
+              <%= leads_in_col.size %>
+            </span>
+          </div>
+
+          <%= link_to new_lead_path(status: col[:key]), data: { turbo_frame: "modal" }, class: "text-slate-400 hover:text-slate-700 p-1 rounded hover:bg-slate-200 transition-colors", title: "Add lead to #{col[:title]}" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+          <% end %>
+        </div>
+
+        <!-- Cards List Container -->
+        <div class="space-y-3 flex-1 flex flex-col" data-kanban-cards>
+          <% if leads_in_col.any? %>
+            <% leads_in_col.each do |lead| %>
+              <%= render "lead_card", lead: lead %>
+            <% end %>
+          <% else %>
+            <div class="flex-1 flex flex-col items-center justify-center p-6 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+              <span class="text-xs font-medium">No leads in <%= col[:title] %></span>
+              <span class="text-[11px] text-slate-400 mt-0.5">Drag cards here</span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
