@@ -77,7 +77,7 @@ class LeadsController < ApplicationController
   def load_form_collections
     @categories = Category.ordered
     @contacts = if @lead.persisted?
-      Contact.where(id: [@lead.contact_id] + Contact.without_lead.pluck(:id)).order(:name)
+      Contact.where(id: [ @lead.contact_id ] + Contact.without_lead.pluck(:id)).order(:name)
     elsif @lead.contact_id.present?
       Contact.where(id: @lead.contact_id)
     else
