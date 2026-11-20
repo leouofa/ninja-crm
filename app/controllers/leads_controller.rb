@@ -4,12 +4,23 @@ class LeadsController < ApplicationController
   def index
     @categories = Category.ordered
     @selected_category_id = params[:category_id].presence
+    @view = params[:view] == "archived" ? "archived" : "active"
 
-    leads_scope = Lead.includes(:contact, :category).order(updated_at: :desc)
-    leads_scope = leads_scope.where(category_id: @selected_category_id) if @selected_category_id.present?
+    @active_count = Lead.active.count
+    @archived_count = Lead.archived.count
 
-    @leads_by_status = Lead.statuses.keys.index_with do |st|
-      leads_scope.select { |lead| lead.status == st }
+    if @view == "archived"
+      archived_scope = Lead.archived.includes(:contact, :category).order(updated_at: :desc)
+      archived_scope = archived_scope.where(category_id: @selected_category_id) if @selected_category_id.present?
+      @archived_leads = archived_scope
+    else
+      leads_scope = Lead.active.includes(:contact, :category).order(updated_at: :desc)
+      leads_scope = leads_scope.where(category_id: @selected_category_id) if @selected_category_id.present?
+
+      active_statuses = %w[backlog in_progress done]
+      @leads_by_status = active_statuses.index_with do |st|
+        leads_scope.select { |lead| lead.status == st }
+      end
     end
   end
 
@@ -50,14 +61,15 @@ class LeadsController < ApplicationController
 
     if Lead.statuses.key?(new_status)
       @lead.update(status: new_status)
+      notice_message = new_status == "archived" ? "Lead for #{@lead.contact.name} was archived." : "Lead status updated to #{@lead.status_label}."
       respond_to do |format|
         format.json { render json: { status: "success", lead: @lead } }
-        format.html { redirect_to leads_path, notice: "Lead status updated to #{@lead.status_label}." }
+        format.html { redirect_back fallback_location: leads_path, notice: notice_message }
       end
     else
       respond_to do |format|
         format.json { render json: { error: "Invalid status" }, status: :unprocessable_entity }
-        format.html { redirect_to leads_path, alert: "Invalid status." }
+        format.html { redirect_back fallback_location: leads_path, alert: "Invalid status." }
       end
     end
   end
@@ -65,7 +77,7 @@ class LeadsController < ApplicationController
   def destroy
     contact_name = @lead.contact.name
     @lead.destroy
-    redirect_to leads_path, notice: "Lead for #{contact_name} was removed."
+    redirect_back fallback_location: leads_path, notice: "Lead for #{contact_name} was removed."
   end
 
   private
