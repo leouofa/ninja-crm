@@ -9,6 +9,15 @@ class TemplatesControllerTest < ActionDispatch::IntegrationTest
     get templates_path
     assert_response :success
     assert_select "h1", text: /Message Templates/
+    assert_select "span", text: "Templates Modal", count: 0
+
+    # Ensure preview div does not have leading whitespace indentation
+    assert_select "div.whitespace-pre-wrap" do |elements|
+      assert elements.any?
+      elements.each do |el|
+        assert_equal el.text, el.text.strip
+      end
+    end
   end
 
   test "should get new" do

@@ -50,16 +50,14 @@
 
                 <!-- Template Message Preview -->
                 <td class="px-3 py-4 align-top text-slate-700">
-                  <div class="bg-slate-50 border border-slate-200/80 rounded-lg p-3 text-xs font-mono text-slate-700 whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed select-all">
-                    <%= template.body %>
-                  </div>
+                  <div class="bg-slate-50 border border-slate-200/80 rounded-lg p-3 text-xs font-mono text-slate-700 text-left whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed select-all"><%= template.body.to_s.strip %></div>
                 </td>
 
                 <!-- Actions -->
                 <td class="py-4 pl-3 pr-6 text-right whitespace-nowrap text-sm font-medium align-top">
                   <div class="inline-flex items-center gap-2 justify-end"
                        data-controller="clipboard"
-                       data-clipboard-content-value="<%= template.body %>">
+                       data-clipboard-content-value="<%= template.body.to_s.strip %>">
 
                     <!-- One click copy button -->
                     <button type="button"
