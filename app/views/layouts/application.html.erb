@@ -37,16 +37,6 @@
 
       <!-- Navigation Links -->
       <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <%= link_to leads_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm #{active_nav_class('leads')}" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-          </svg>
-          <span class="flex-1">Leads</span>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
-            <%= Lead.count %>
-          </span>
-        <% end %>
-
         <%= link_to contacts_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm #{active_nav_class('contacts')}" do %>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -54,6 +44,16 @@
           <span class="flex-1">Contacts</span>
           <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
             <%= Contact.count %>
+          </span>
+        <% end %>
+
+        <%= link_to leads_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm #{active_nav_class('leads')}" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+          </svg>
+          <span class="flex-1">Leads</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
+            <%= Lead.count %>
           </span>
         <% end %>
 
