@@ -1,17 +1,25 @@
-# Ninja CRM
+<p align="center">
+  <img src=".github/assets/ninja-crm-logo.jpg" alt="Ninja CRM Logo" width="220" style="border-radius: 16px;" />
+</p>
 
-[![Rails 8](https://img.shields.io/badge/Rails-8.1-CC0000.svg?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
-[![Ruby](https://img.shields.io/badge/Ruby-3.4%2B-CC342D.svg?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%2B-4169E1.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4.svg?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Hotwire](https://img.shields.io/badge/Hotwire-Turbo_%2B_Stimulus-yellow.svg)](https://hotwired.dev/)
-[![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-6BA539.svg?logo=openapiinitiative&logoColor=white)](public/api/v1/openapi.json)
-[![MCP Ecosystem](https://img.shields.io/badge/MCP-First-purple.svg)](https://modelcontextprotocol.io/)
-[![Companion MCP Server](https://img.shields.io/badge/ninja--crm--mcp-v1.0.0-emerald.svg)](https://github.com/leouofa/ninja-crm-mcp)
-[![Tests](https://img.shields.io/badge/Tests-90_passing-brightgreen.svg)](test/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<h1 align="center">Ninja CRM</h1>
 
-An **MCP-first CRM engine** built with Ruby on Rails 8, engineered from the ground up for autonomous AI agents and modern human teams.
+<p align="center">
+  <a href="https://rubyonrails.org/"><img src="https://img.shields.io/badge/Rails-8.1-CC0000.svg?logo=rubyonrails&logoColor=white" alt="Rails 8" /></a>
+  <a href="https://www.ruby-lang.org/"><img src="https://img.shields.io/badge/Ruby-3.4%2B-CC342D.svg?logo=ruby&logoColor=white" alt="Ruby" /></a>
+  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-16%2B-4169E1.svg?logo=postgresql&logoColor=white" alt="PostgreSQL" /></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4.svg?logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4" /></a>
+  <a href="https://hotwired.dev/"><img src="https://img.shields.io/badge/Hotwire-Turbo_%2B_Stimulus-yellow.svg" alt="Hotwire" /></a>
+  <a href="public/api/v1/openapi.json"><img src="https://img.shields.io/badge/OpenAPI-3.1-6BA539.svg?logo=openapiinitiative&logoColor=white" alt="OpenAPI 3.1" /></a>
+  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-First-purple.svg" alt="MCP Ecosystem" /></a>
+  <a href="https://github.com/leouofa/ninja-crm-mcp"><img src="https://img.shields.io/badge/ninja--crm--mcp-v1.0.0-emerald.svg" alt="Companion MCP Server" /></a>
+  <a href="test/"><img src="https://img.shields.io/badge/Tests-90_passing-brightgreen.svg" alt="Tests" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+</p>
+
+<p align="center">
+  <strong>The MCP-first CRM engine built with Ruby on Rails 8, engineered from the ground up for autonomous AI agents and modern human teams.</strong>
+</p>
 
 Ninja CRM pairs a high-velocity, reactive Hotwire web application with an agentic-optimized backend specifically architected to serve as the high-fidelity state engine for its companion Model Context Protocol server, [**`ninja-crm-mcp`**](https://github.com/leouofa/ninja-crm-mcp).
 
