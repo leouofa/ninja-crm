@@ -17,7 +17,32 @@ class LeadsControllerTest < ActionDispatch::IntegrationTest
   test "should filter index by category" do
     get leads_path(category_id: categories(:coaching).id)
     assert_response :success
-    assert_select "h4", text: @lead.contact.name
+    assert_select "h4 a", text: @lead.contact.name
+    assert_select "a[href=?]", contacts_path(q: @lead.contact.name)
+  end
+
+  test "should get archived view on index" do
+    @lead.update!(status: :archived)
+    get leads_path(view: "archived")
+    assert_response :success
+    assert_select "h4 a", text: @lead.contact.name
+    assert_select "button", text: /Restore to Done/
+  end
+
+  test "should archive lead" do
+    @lead.update!(status: :done)
+    patch move_lead_path(@lead), params: { status: "archived" }
+    assert_redirected_to leads_path
+    @lead.reload
+    assert_equal "archived", @lead.status
+  end
+
+  test "should restore archived lead to done" do
+    @lead.update!(status: :archived)
+    patch move_lead_path(@lead), params: { status: "done" }
+    assert_redirected_to leads_path
+    @lead.reload
+    assert_equal "done", @lead.status
   end
 
   test "should get new" do

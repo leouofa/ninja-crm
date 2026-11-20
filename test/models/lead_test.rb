@@ -27,6 +27,21 @@ class LeadTest < ActiveSupport::TestCase
     assert_includes lead.errors[:status], "is not included in the list"
   end
 
+  test "allows archived status and scopes active and archived leads" do
+    archived_lead = Lead.create!(
+      contact: contacts(:clara),
+      category: categories(:recruiting),
+      status: :archived,
+      notes: "Archived deal"
+    )
+    assert archived_lead.valid?
+    assert archived_lead.archived?
+    assert_equal "Archived", archived_lead.status_label
+
+    assert_includes Lead.archived, archived_lead
+    assert_not_includes Lead.active, archived_lead
+  end
+
   test "creates new category inline via new_category_name" do
     lead = Lead.new(
       contact: contacts(:clara),
