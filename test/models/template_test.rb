@@ -23,4 +23,9 @@ class TemplateTest < ActiveSupport::TestCase
     assert template.valid?
     assert_equal "Partnerships", template.category.name
   end
+
+  test "normalizes body by stripping whitespace" do
+    template = Template.new(category: categories(:recruiting), body: "  \n  Hi {{name}}  \n  ")
+    assert_equal "Hi {{name}}", template.body
+  end
 end
