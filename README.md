@@ -219,6 +219,13 @@ All programmatic API endpoints are scoped under `/api/v1/`:
 
 ## Quickstart & Local Development
 
+> [!TIP]
+> **Prefer running with Docker?** You can run the entire development stack (Rails on port 3012, Solid Queue background jobs, Tailwind watcher, and PostgreSQL with pgvector) in Docker Compose:
+> ```sh
+> docker compose up -d --build
+> ```
+> See [docs/DOCKER.md](docs/DOCKER.md) for full details, Tailscale access, volume persistence, and everyday commands.
+
 ### Prerequisites
 
 - **Ruby**: `3.4.0` or higher (compatible with `3.3+`)
