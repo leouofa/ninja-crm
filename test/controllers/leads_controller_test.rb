@@ -124,4 +124,21 @@ class LeadsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to leads_path
   end
+
+  test "should render copy notes button when lead has notes" do
+    @lead.update!(notes: "Crucial project note")
+    get leads_path
+    assert_response :success
+    assert_select "div[data-controller='clipboard'][data-clipboard-content-value='Crucial project note']" do
+      assert_select "button[title='Copy Notes']"
+    end
+  end
+
+  test "should not render copy notes button when lead has blank notes" do
+    @lead.update!(notes: nil)
+    leads(:bob_lead).update!(notes: "")
+    get leads_path
+    assert_response :success
+    assert_select "button[title='Copy Notes']", count: 0
+  end
 end
